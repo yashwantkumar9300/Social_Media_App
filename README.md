@@ -2,10 +2,10 @@
 
 Used Tech Stack
 
-Django
-Sqlite
-Web Socket (Django Channel)
-HTML, CSS
+Django, 
+Sqlite, 
+Web Socket (Django Channel), 
+HTML, CSS, 
 Javascript
 
 Current Features:
