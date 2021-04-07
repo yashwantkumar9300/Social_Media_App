@@ -1,0 +1,245 @@
+{% extends 'home_common.html' %}
+{% load webpush_notifications %}
+{% block content %}
+    {% load  static %}
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="panel panel-default post">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="font-weight: bolder;font-size: 20px">Friend Requests {% if total_req %}({{ total_req }}){% endif %}</h3>
+                </div>
+              <div class="panel-body" style="overflow-y: scroll;max-height: 400px">
+              {% if frnd_req %}
+                    {% for req in frnd_req %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a href="{% url 'search_friends_detail' %}?f={{ req.0.request_from.username }}"><img src="{{ req.0.request_from.image.url }}" style="height: 100px;width: 100px" class="img-thumbnail" alt="..."></a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="noti_div">
+                                <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ req.0.request_from.username }}"><h5 class="card-title" style="font-weight: bold">{{ req.0.request_from.username }}.</h5></a>
+                                {% if req.1 %}
+                                <div class="row">
+                                <span style="margin-top: 10px;margin-left: 16px">Friends in common - </span>
+                                {% for comm in req.1 %}
+                                    <div class="col-sm-2">
+                                        <div>
+                                            <a href="{% url 'search_friends_detail' %}?f={{ comm.username }}" style="text-decoration: none;color: black">
+                                            <img src="{{ comm.image.url }}" style="height: 40px;width: 40px;border-radius: 20px">
+                                            <p class="card-text">{{ comm.fname|truncatechars:"10" }}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                <p>
+                                    <button class="btn btn-success" id="accept{{ req.0.idno }}" onclick="acceptMultipleRequest(this)" value="{{ req.0.idno }}">Accept Request</button>
+                                    <button class="btn btn-danger" id="cancel{{ req.0.idno }}" onclick="cancelMultipleRequest(this)" value="{{ req.0.idno }}">Cancel</button>
+                                    <span id="accepted{{ req.0.idno }}"></span>
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted load_more_request" style="display: none;visibility: hidden">{{ req.0.request_date }}</small>
+                                    <small>{{ req.0.request_date|timesince }} ago.</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+{#                        {% empty %}#}
+{#                        <h4 style="text-align: center">No Requests</h4>#}
+                    {% endfor %}
+
+                  <div id="load_more_request"></div>
+                  {% for temp in frnd_req %}
+                      {% if forloop.last %}
+                        <input type="hidden" id="last_datetime" value="{{ temp.0.request_date|date:"yy-m-d h:i:s" }}">
+                      {% endif %}
+                  {% endfor %}
+                  <div id="no_more_req"></div>
+                    <h2 align="center" id="load_more_request_btn"><button class="btn btn-success" onclick="load_more_request()">Load More Request</button></h2>
+                  {% else %}
+                  <h4 style="text-align: center">No Requests</h4>
+              {% endif %}
+              </div>
+            </div>
+
+         <div class="panel panel-default post">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="font-weight: bolder;font-size: 20px">All Friends {% if total_friends %}({{ total_friends }}){% endif %}</h3>
+                </div>
+              <div class="panel-body" style="overflow-y: scroll;max-height: 400px">
+                    {% if total_friends %}
+                    {% for frnd in all_friends %}
+                    <div class="row">
+                        {% if frnd.0.request_from.user == request.user %}
+                        <div class="col-md-2">
+                            <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ frnd.0.request_to.username }}"><img src="{{ frnd.0.request_to.image.url }}" class="img-thumbnail img-responsive" style="height: 100px;width: 100px"  alt="..."></a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="noti_div">
+                                <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ frnd.0.request_to.username }}"><h5 class="card-title" style="font-weight: bold">{{ frnd.0.request_to.username }}.</h5></a>
+                                {% if frnd.1 %}
+                                <div class="row">
+                                <span style="margin-top: 10px;margin-left: 16px">Friends in common - </span>
+                                {% for comm in frnd.1 %}
+                                    <div class="col-sm-2">
+                                        <div>
+                                            <a href="{% url 'search_friends_detail' %}?f={{ comm.username }}" style="text-decoration: none;color: black">
+                                            <img src="{{ comm.image.url }}" style="height: 40px;width: 40px;border-radius: 20px">
+                                            <p class="card-text">{{ comm.fname|truncatechars:"10" }}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                <p>
+                                    <button class="btn btn-danger" id="unfrnd{{ frnd.0.idno }}" onclick="unfriendMultiple(this)" value="{{ frnd.0.idno }}">Unfriend</button>
+{#                                    <span id="accepted"></span>#}
+                                </p>
+                                <p class="card-text"><small class="text-muted">Friends from - {{ frnd.0.request_accepted_date|date:"M Y" }}</small></p>
+                            </div>
+                        </div>
+                        {% else %}
+                            <div class="col-md-2">
+                                <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ frnd.0.request_from.username }}"><img src="{{ frnd.0.request_from.image.url }}" style="height: 100px;width: 100px" class="img-thumbnail" alt="..."></a>
+                            </div>
+                        <div class="col-md-8">
+                            <div class="noti_div">
+                                <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ frnd.0.request_from.username }}"><h5 class="card-title" style="font-weight: bold">{{ frnd.0.request_from.username }}.</h5></a>
+                                {% if frnd.1 %}
+                                <div class="row">
+                                <span style="margin-top: 10px;margin-left: 16px">Friends in common - </span>
+                                {% for comm in frnd.1 %}
+                                    <div class="col-sm-2">
+                                        <div>
+                                            <a href="{% url 'search_friends_detail' %}?f={{ comm.username }}" style="text-decoration: none;color: black">
+                                            <img src="{{ comm.image.url }}" style="height: 40px;width: 40px;border-radius: 20px">
+                                            <p class="card-text">{{ comm.username|truncatechars:"6" }}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                <p>
+                                    <button class="btn btn-danger" id="unfrnd{{ frnd.0.idno }}" onclick="unfriendMultiple(this)" value="{{ frnd.0.idno }}">Unfriend</button>
+{#                                    <span id="accepted"></span>#}
+                                </p>
+                                <p class="card-text"><small class="text-muted">Friends from - {{ frnd.0.request_accepted_date|date:"M Y" }}</small></p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </div>
+                        {% empty %}
+                        <h4 style="text-align: center">No Friends</h4>
+                    {% endfor %}
+
+                        <div id="load_more_friend"></div>
+                        {% for temp1 in all_friends %}
+                            {% if forloop.last %}
+                                <input type="hidden" id="last_friend_datetime" value="{{ temp1.0.request_accepted_date|date:"yy-m-d h:i:s" }}">
+                            {% endif %}
+                        {% endfor %}
+                        <div id="no_more_friend"></div>
+                        <h2 align="center" id="load_more_friend_btn"><button class="btn btn-success" onclick="load_more_friends()">Load More Friends</button></h2>
+                    {% else %}
+                        <h4 style="text-align: center">No Friends</h4>
+                    {% endif %}
+              </div>
+            </div>
+
+          <div class="panel panel-default post">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="font-weight: bolder;font-size: 20px">Sent Requests {% if total_sent %}({{ total_sent }}){% endif %}</h3>
+                </div>
+              <div class="panel-body" style="overflow-y: scroll;max-height: 400px">
+                    {% if my_sent_req %}
+                    {% for my_sent in my_sent_req %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a href="{% url 'search_friends_detail' %}?f={{ my_sent.0.request_to.username }}"><img src="{{ my_sent.0.request_to.image.url }}" style="height: 100px;width: 100px" class="img-thumbnail" alt="..."></a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="noti_div">
+                                <a style="text-decoration: none;color: black" href="{% url 'search_friends_detail' %}?f={{ my_sent.0.request_to.username }}"><h5 class="card-title" style="font-weight: bold">{{ my_sent.0.request_to.username }}.</h5></a>
+                                {% if my_sent.1 %}
+                                <div class="row">
+                                <span style="margin-top: 10px;margin-left: 16px">Friends in common - </span>
+                                {% for comm in my_sent.1 %}
+                                    <div class="col-sm-2">
+                                        <div>
+                                            <a href="{% url 'search_friends_detail' %}?f={{ comm.username }}" style="text-decoration: none;color: black">
+                                            <img src="{{ comm.image.url }}" style="height: 40px;width: 40px;border-radius: 20px">
+                                            <p class="card-text">{{ comm.username|truncatechars:"6" }}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                <p>
+{#                                    <button class="btn btn-success" id="accept{{ req.idno }}" onclick="acceptMultipleRequest(this)" value="{{ req.idno }}">Accept Request</button>#}
+                                    <button class="btn btn-danger" id="cancel{{ my_sent.0.idno }}" onclick="cancelMultipleRequest(this)" value="{{ my_sent.0.idno }}">Cancel</button>
+                                    <span id="accepted{{ my_sent.0.idno }}"></span>
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted" style="visibility: hidden;display: none">{{ my_sent.0.request_date }}</small>
+                                    <small>{{ my_sent.0.request_date|timesince }} ago.</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                        {% empty %}
+                        <h4 style="text-align: center">No Sent Requests</h4>
+                    {% endfor %}
+                        <div id="load_more_sent_req"></div>
+                        {% for temp2 in my_sent_req %}
+                            {% if forloop.last %}
+                                <input type="hidden" id="last_sent_req_datetime" value="{{ temp2.0.request_date|date:"yy-m-d h:i:s" }}">
+                            {% endif %}
+                        {% endfor %}
+                        <div id="no_more_sent_req"></div>
+                        <h2 align="center" id="load_more_sent_req_btn"><button class="btn btn-success" onclick="load_more_sent_req()">Load More Request</button></h2>
+                    {% else %}
+                        <h4 style="text-align: center">No Sent Request</h4>
+                    {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default friends">
+              <div class="panel-heading">
+                <h3 class="panel-title">My Friends</h3>
+              </div>
+              <div class="panel-body">
+              <ul>
+                  {% for frnd in myFriendsList %}
+                        <li><a href="{% url 'search_friends_detail' %}?f={{ frnd.username }}" class="thumbnail"><img style="max-height: 70px;max-width: 70px" src="{{ frnd.image.url }}" alt=""><h6 align="center" style="text-align: center">{{ frnd.fname|truncatechars:"10" }}</h6></a></li>
+                  {% endfor %}
+              </ul>
+                <div class="clearfix"></div>
+                <a class="btn btn-primary" href="{% url 'friends' %}">View All Friends</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    var data=document.getElementById("friends_tab")
+        data.className="nav-link active"
+        data.style.fontSize="40"
+        data.style.fontWeight="bolder"
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+
+

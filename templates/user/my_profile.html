@@ -1,0 +1,138 @@
+{% extends 'home_common.html' %}
+
+{% block content %}
+    {% load static %}
+    <style>
+        .profile-img .edit:hover {
+         display: block;
+         opacity: 1;
+         cursor: pointer;
+         transition: .4s ease-in-out;
+
+}
+    .edit {
+        padding-left: 5px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: block;
+    opacity: 0;
+    height: 100px;
+    width: 100px;
+
+}
+
+.edit a {
+	color: #000;
+}
+    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <section class="intro-section" style="margin-top: -20px;z-index: 0;position: relative">
+		<div class="container" style="margin-top: -150px">
+			<div class="row">
+				<div class="col-md-1 col-lg-2"></div>
+				<div class="col-md-10 col-lg-8">
+                {% for data in udata %}
+					<div class="intro">
+						<div class="profile-img">
+                            <a href="{{ data.image.url }}"><img id="pp" src="{{ data.image.url }}" alt="" class="img-responsive"></a>
+                            <div class="edit">
+                                <form action="{% url 'update_profile' %}" id="profileForm" enctype="multipart/form-data" method="post">
+                                    {% csrf_token %}
+                                <label>
+                                    <input type="file" name="profileimg" style="visibility: hidden" accept="image/*" onchange="submitForm()"><i class="fa fa-edit fa-2x"></i>
+                                </label>
+                                </form>
+                            </div>
+                        </div>
+
+{#						{%  if udata %}#}
+                        <h2><b>{{ data.fname }} {{ data.lname }}</b>&nbsp;&nbsp;<i data-toggle="modal" data-target="#exampleModal" class="fa fa-edit" style="font-size:27px"></i></h2>
+{#						<h4 class="font-yellow">Key Account Manager</h4>#}
+						<ul class="information margin-tb-30">
+							<li><b>MOBILE NUMBER : </b>{{ data.username }}</li>
+							<li><b>EMAIL ID : </b>{{ data.email }}</li>
+							<li><b>JOINED : </b>{{ data.user.date_joined|date:"M Y" }}</li>
+							<li><b>WORKING AS : </b>{{ data.working_as }}</li>
+							<li><b>LIVES IN : </b>{{ data.lives_in }}</li>
+							<li><b>BIO : </b>{{ data.about }}</li>
+
+						</ul>
+
+					</div><!-- intro -->
+                            {% endfor %}
+
+				</div><!-- col-sm-8 -->
+			</div><!-- row -->
+		</div><!-- container -->
+	</section><!-- intro-section -->
+
+<div class="modal-dialog">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="personal_det" action="{% url 'updateDetails' %}" method="post">
+        {% csrf_token %}
+            {% for data2 in udata %}
+          <div class="form-group">
+            <label for="username" class="col-form-label">Mobile No :</label>
+            <input type="text" name="username" required value="{{ data2.username }}" onchange="checkUsername(this)" class="form-control" id="username">
+            <div id="username_div"></div>
+          </div>
+          <div class="form-group">
+            <label for="email" class="col-form-label">Email:</label>
+            <input name="email" onchange="checkUseremail(this)" required value="{{ data2.email }}" type="email" class="form-control" id="email">
+            <div id="useremail_div"></div>
+          </div>
+          <div class="form-group">
+            <label for="fname" class="col-form-label">First Name:</label>
+            <input type="text" name="fname" required value="{{ data2.fname }}" class="form-control" id="fname">
+          </div>
+          <div class="form-group">
+            <label for="lname" class="col-form-label">Last Name:</label>
+            <input type="text" name="lname" required value="{{ data2.lname }}" class="form-control" id="lname">
+          </div>
+          <div class="form-group">
+            <label for="working" class="col-form-label">Working As:</label>
+            <input type="text" name="working" value="{{ data2.working_as }}" class="form-control" id="working">
+          </div>
+          <div class="form-group">
+            <label for="lives" class="col-form-label">Lives in:</label>
+            <input type="text" name="living" value="{{ data2.lives_in }}" class="form-control" id="lives">
+          </div>
+          <div class="form-group">
+            <label for="about" class="col-form-label">About yourself:</label>
+            <textarea class="form-control" name="about" id="about">{{ data2.about }}</textarea>
+          </div>
+            {% endfor %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="update_btn" type="button" onclick="document.getElementById('personal_det').submit();" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+    <script>
+        var data=document.getElementById("my_profile_tab")
+        data.className="nav-link active"
+        data.style.fontSize="40"
+        data.style.fontWeight="bolder"
+        function submitForm() {
+            document.getElementById("profileForm").submit()
+        }
+
+    </script>
+<script src="https://cdn.scaleflex.it/plugins/filerobot-image-editor/3.12.1/filerobot-image-editor.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+{% endblock %}

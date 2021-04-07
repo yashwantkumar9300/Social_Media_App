@@ -1,0 +1,60 @@
+{% load static %}
+<html>
+    <head>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+	<title> FraindsBook.com</title>
+
+	<!--Bootsrap 4 CDN-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!--Fontawesome CDN-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+	<!--Custom styles-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+        <style>
+            .no-js #loader { display: none;  }
+            .js #loader { display: block; position: absolute; left: 100px; top: 0; }
+            .se-pre-con {
+	            position: fixed;
+	            left: 0px;
+	            top: 0px;
+	            width: 100%;
+	            height: 100%;
+	            z-index: 9999;
+	            background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+                }
+        </style>
+    </head>
+<body>
+
+    <div class="se-pre-con"></div>
+
+        <div id="site_name">
+            <a id="site_name_link" href="{% url 'u_login' %}">FraindsBook.com</a>
+        </div>
+    {% block content %}
+
+    {% endblock %}
+    {% block footer %}
+        <div id="footer">
+           Copyright © 2021 FraindsBook.com All Rights Reserved
+        </div>
+    {% endblock %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+<script>
+	// Wait for window load
+	$(window).load(function() {
+		// Animate loader off screen
+		$(".se-pre-con").fadeOut("slow");
+	});
+</script>
+</body>
+</html>

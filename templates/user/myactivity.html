@@ -1,0 +1,184 @@
+{% extends 'home_common.html' %}
+{#{% load webpush_notifications %}#}
+{% block content %}
+    {% load static %}
+
+
+    <style>
+        .noti_div{
+            min-width: 850px;overflow: auto;
+        }
+    </style>
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+
+                {% if all_noti %}
+                    <div class="panel panel-default post" id="loaded_noti">
+                {% for noti in all_noti %}
+                        {#                    Noti for me                   #}
+                            {% if request.user == noti.noti_from.user %}
+                                <div class="card" style="max-width: 850px;overflow: hidden">
+                                <div class="row no-gutters">
+                                {% if noti.not_type != "Request Cancelled" or noti.not_type != "Unfriend" %}
+                                    {% if noti.not_type == "Post Created" or noti.not_type == "Commented on post" or noti.not_type == "Commented on own post" or noti.not_type == "Liked on own" or noti.not_type == "Liked" or noti.not_type == "Updated Profile" or noti.not_type == "Commented on profile" or noti.not_type == "Commented on own profile"  %}
+{#                                        Noti for post#}
+                                        {% if noti.status == "unread" %}
+                                        <a href="{% url 'view_post' %}?idnt={{ noti.post_id.post_id }}&nid={{ noti.idno }}" style="text-decoration: none;color: black">
+                                        <div class="col-md-2" style="background-color: rgba(191,187,126,0.53)">
+                                            <img src="{{ noti.noti_from.image.url }}" style="max-height: 100px;max-width: 100px" class="img-thumbnail img-fluid" alt="...">
+                                        </div>
+                                        <div class="col-md-8" style="background-color:  rgba(191,187,126,0.53);">
+{#                                            <i class="fa fa-heart" style="font-size:22px;color:red"></i>#}
+                                            <div class="noti_div">
+                                                <h6 class="card-title" style="font-weight: bold">
+                                                    {{ noti.not_type }}.&nbsp;&nbsp;
+                                                    {% if noti.not_type == "Post Created" %}
+                                                        <img src="{% static 'images/icons8-create-50.png' %}" height="30px" width="30px">
+                                                    {% elif noti.not_type == "Commented on post" or noti.not_type == "Commented on own post" or noti.not_type == "Commented on profile" or noti.not_type == "Commented on own profile" %}
+                                                        <img src="{% static 'images/comment_icon.png' %}" height="30px" width="30px">
+                                                    {% elif noti.not_type == "Liked" or noti.not_type == "Liked on own" %}
+                                                        <i class="fa fa-heart" style="font-size:18px;color:red"></i>
+                                                    {% elif noti.not_type == "Updated Profile" %}
+                                                        <img src="{% static 'images/update_profile_icon.png' %}" height="30px" width="30px">
+                                                    {% else %}
+                                                    {% endif %}
+                                                </h6>
+                                                <p class="card-text"><h6>{{ noti.my_notification }}</h6></p>
+                                                <p class="card-text">
+                                                    <small class="text-muted" style="visibility: hidden;display: none">{{ noti.noti_date }}</small>
+                                                    <small>{{ noti.noti_date|timesince }} ago.</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'view_postr' %}?idnt={{ noti.post_id.post_id }}" style="text-decoration: none;color: black">
+                                        <div class="col-md-2">
+                                            <img src="{{ noti.noti_from.image.url }}" style="max-height: 100px;max-width: 100px" class="img-thumbnail img-fluid" alt="...">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="noti_div">
+                                                <h6 class="card-title" style="font-weight: bold">
+                                                    {{ noti.not_type }}.&nbsp;&nbsp;
+                                                    {% if noti.not_type == "Post Created" %}
+                                                        <img src="{% static 'images/icons8-create-50.png' %}" height="30px" width="30px">
+                                                    {% elif noti.not_type == "Commented on post" or noti.not_type == "Commented on profile" or noti.not_type == "Commented on own post" or noti.not_type == "Commented on own profile" %}
+                                                        <img src="{% static 'images/comment_icon.png' %}" height="30px" width="30px">
+                                                    {% elif noti.not_type == "Liked" or noti.not_type == "Liked on own" %}
+                                                        <i class="fa fa-heart" style="font-size:18px;color:red"></i>
+                                                    {% elif noti.not_type == "Updated Profile" %}
+                                                        <img src="{% static 'images/update_profile_icon.png' %}" height="30px" width="30px">
+                                                    {% else %}
+                                                    {% endif %}
+                                                </h6>
+                                                <p class="card-text"><h6>{{ noti.my_notification }}</h6></p>
+                                                <p class="card-text">
+                                                    <small class="text-muted" style="visibility: hidden;display: none">{{ noti.noti_date }}</small>
+                                                    <small>{{ noti.noti_date|timesince }} ago.</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        </a>
+                                        {% endif %}
+
+
+                                    {% else %}
+{#                                        Noti for Frnd Requests#}
+                                        {% if noti.status == "unread" %}
+                                        <a href="{% url 'read_acti' %}?idnt={{ noti.idno }}" style="text-decoration: none;color: black">
+                                        <div class="col-md-2" style="background-color: rgba(191,187,126,0.53)">
+                                            <img src="{{ noti.noti_from.image.url }}" style="max-height: 100px;max-width: 100px" class="img-thumbnail img-fluid" alt="...">
+                                        </div>
+                                        <div class="col-md-8" style="background-color:  rgba(191,187,126,0.53);">
+                                            <div class="noti_div">
+                                                <h6 class="card-title" style="font-weight: bold">
+                                                    {{ noti.not_type }}.&nbsp;&nbsp;
+                                                    {% if noti.not_type == "Friend Request" %}
+                                                        <img src="{% static 'images/add_friend.png' %}" height="30px" width="40px">
+                                                    {% elif noti.not_type == "Request Accepted" %}
+                                                        <img src="{% static 'images/accepted_friend.png' %}" height="30px" width="40px">
+                                                    {% else %}
+                                                    {% endif %}
+                                                </h6>
+                                                <p class="card-text"><h6>{{ noti.my_notification }}</h6></p>
+                                                <p class="card-text">
+                                                    <small class="text-muted" style="visibility: hidden;display: none">{{ noti.noti_date }}</small>
+                                                    <small>{{ noti.noti_date|timesince }} ago.</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'read_acti' %}?idnt={{ noti.idno }}" style="text-decoration: none;color: black">
+                                        <div class="col-md-2">
+                                            <img src="{{ noti.noti_from.image.url }}" style="max-height: 100px;max-width: 100px" class="img-thumbnail img-fluid" alt="...">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="noti_div">
+                                                <h6 class="card-title" style="font-weight: bold">
+                                                    {{ noti.not_type }}.&nbsp;&nbsp;
+                                                    {% if noti.not_type == "Friend Request" %}
+                                                        <img src="{% static 'images/add_friend.png' %}" height="30px" width="30px">
+                                                    {% elif noti.not_type == "Request Accepted" %}
+                                                        <img src="{% static 'images/accepted_friend.png' %}" height="30px" width="30px">
+                                                    {% else %}
+                                                    {% endif %}
+                                                </h6>
+                                                <p class="card-text"><h6>{{ noti.my_notification }}</h6></p>
+                                                <p class="card-text">
+                                                    <small class="text-muted" style="visibility: hidden;display: none">{{ noti.noti_date }}</small>
+                                                    <small>{{ noti.noti_date|timesince }} ago.</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+
+                         </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+{#                    {% else %}#}
+{#                    <h4 style="text-align: center;">No Notifications</h4>#}
+                {% endif %}
+          <div id="no_more_noti"></div>
+                {% if curr_usr_noti %}
+                        <h2 align="center" id="load_more_button"><button class="btn btn-success" onclick="load_more_activity()">Load More</button></h2>
+                    {% else %}
+                        <h4 style="text-align: center;color: red">No Activity</h4>
+                {% endif %}
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default friends">
+              <div class="panel-heading">
+                <h3 class="panel-title">My Friends</h3>
+              </div>
+              <div class="panel-body">
+                <ul>
+                  {% for frnd in myFriendsList %}
+                        <li><a href="{% url 'search_friends_detail' %}?f={{ frnd.username }}" class="thumbnail"><img style="max-height: 70px;max-width: 70px" src="{{ frnd.image.url }}" alt=""><h6 align="center" style="text-align: center">{{ frnd.fname|truncatechars:"10" }}</h6></a></li>
+                  {% endfor %}
+                </ul>
+                <div class="clearfix"></div>
+                <a class="btn btn-primary" href="{% url 'friends' %}">View All Friends</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="{% static 'js/momentjs.js' %}"></script>
+     <script>
+        var data=document.getElementById("activity_tab")
+        data.className="nav-link active"
+        data.style.fontSize="40"
+        data.style.fontWeight="bolder"
+    </script>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'common1.html' %}
+{% block content %}
+    <form action="{% url 'for_pwd_validate_otp' %}" method="post">
+    {% csrf_token %}
+    <table align="center" cellpadding="5">
+        <tr>
+            <th colspan="2" class="common_title">OTP Verification</th>
+        </tr>
+        <tr>
+            <th><input type="text" class="form-control" placeholder="Enter Your OTP" required name="otp"></th>
+        </tr>
+            <tr><th><input type="password" class="form-control" required placeholder="Password" id="pass1" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" name="pass1" onblur="checkPass()"><span id="spass1"></span></th></tr>
+            <tr><th><input type="password" class="form-control" required placeholder="Confirm Password" id="pass2" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" name="pass2" onblur="checkPass()"><span id="spass2"></span></th></tr>
+            <tr><th>{% if error %}{{ error }}{% endif %}</th></tr>
+
+        <tr><th colspan="2" style="text-align: center"><button class="btn btn-primary" type="submit" id="btn">Verify</button></th></tr>
+    </table>
+    </form>
+    <script>
+        function checkPass() {
+            var pass1=document.getElementById('pass1').value
+            var pass2=document.getElementById('pass2').value
+            var spass1=document.getElementById("spass1")
+            var spass2=document.getElementById("spass2")
+            var btn=document.getElementById('btn')
+            if(pass1===pass2){
+                spass1.innerHTML=""
+                spass2.innerHTML=""
+                btn.disabled=false
+            }
+            else{
+                spass1.innerHTML="Password Doesn't Match"
+                spass1.style.color="red"
+                spass2.innerHTML="Confirm Password Doesn't Match"
+                spass2.style.color="red"
+                btn.disabled=true
+            }
+        }
+    </script>
+
+    <br><br><br><br><br><br><br><br><br>
+{% endblock %}

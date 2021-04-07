@@ -1,0 +1,18 @@
+{% extends 'common1.html' %}
+{% block content %}
+    <form action="{% url 'reg_validate_otp' %}" method="post">
+    {% csrf_token %}
+    <table align="center" cellpadding="10">
+        <tr>
+            <th colspan="2" style="font-size: 20px">Enter OTP send to your email Id</th>
+        </tr>
+        <tr>
+            <th style="text-align: center"><input type="text" class="form-control" placeholder="Enter Your OTP" required name="otp"></th>
+            <th>{% if error %}{{ error }}{% endif %}</th>
+        </tr>
+        <tr><th colspan="2" style="text-align: center"><button type="submit" class="btn btn-success"> Verify </button></th></tr>
+    </table>
+    </form>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}

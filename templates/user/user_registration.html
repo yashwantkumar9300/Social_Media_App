@@ -1,0 +1,31 @@
+{% extends 'common1.html' %}
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+    <form action="{% url 'save_reg' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table align="center" border="0" width="30%" cellpadding="5">
+        <tr><th colspan="2" id="reg_form_title">Registration Form<br></th></tr>
+        {% for data in reg_form %}
+        <tr>
+            <th class="reg_form_label">{{ data.label }}</th>
+            <th class="reg_form_fields">{{ data }}</th>
+            {% if data.errors %}
+                <th style="width: 400px">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>{{ data.errors }}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </th>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        <tr><th colspan="2" style="text-align: center"><br><button type="submit" class="btn btn-success">Register</button></th></tr>
+        <tr><th style="text-align: center" colspan="2"> <br> Already have an account?<a href="{% url 'u_login' %}"> Login</a> </th></tr>
+    </table>
+    </form>
+
+    <br><br><br>
+{% endblock %}

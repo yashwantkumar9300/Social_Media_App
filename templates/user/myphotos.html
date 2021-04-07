@@ -1,0 +1,137 @@
+{% extends 'home_common.html' %}
+{% load webpush_notifications %}
+{% block content %}
+    {% load  static %}
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style1.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <style>
+
+    #logo {
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYlJREFUeNrcV4FtgzAQBJQB3AlCN0gmiNkgnaBhg25QMUHSCUInKJkgZgNGyAhskP6r58qJsCEUE5qXLMvI8t//359NGDhMytWepk3gz7LQ4VzSdAw8WxTc2WYd9ymlymQop5Td87/IQEVDR137AhAahPNlFZWvtpVgRgtmulcA5CO5BmFyQHou8wJjmm3YB0B9TwAp1fKJ5mcap7EB7Mh5/qNKJTv/GAuAQsSHq+/zMaQ4R6RfzGRqpwJrZvWbbwDaGeuEwLc1hmm6HNshS8BMTxG5aDkjxv5sSAAFIo07nsPR7/p0RuSI6vWGcwQ4UQwFQPaQ6FVDp0z/RTRJAMxovj75rbDsqP0pnmyVjYikIawjR1z/TgA5HaYguRXEqO29qCXa1Y6iiVuRZaNr3dQxrrUTfGg+j8wfBtwBJ+hBm8pxBj7hfNsAWpdncZm60grA5EOG/n5H+mIAEx2y8wtAl/XWLhCIiCW5pPECciZ9ROcvPyacuj3Y/Pg6MDqAzLOP3EZAtm8BBgDqc3bEpb6xyQAAAABJRU5ErkJggg==') no-repeat center center transparent;
+	background-size: contain;
+	width: 25px;
+	height: 25px;
+	display: inline-block;
+	position: relative;
+	bottom: -4px;
+	left: -4px;
+}
+
+.elem, .elem * {
+	box-sizing: border-box;
+	margin: 0 !important;
+}
+.elem {
+	display: inline-block;
+	font-size: 0;
+	width: 15%;
+	border: 5px solid #4cae4c;
+	border-bottom: none;
+	background: #fff;
+	padding: 5px;
+	height: auto;
+	background-clip: padding-box;
+}
+.elem > span {
+	display: block;
+	cursor: pointer;
+	height: 0;
+	padding-bottom:	70%;
+	background-size: cover;
+	background-position: center center;
+}
+    </style>
+<style type="text/css">
+.lcl_fade_oc.lcl_pre_show #lcl_overlay,
+.lcl_fade_oc.lcl_pre_show #lcl_window,
+.lcl_fade_oc.lcl_is_closing #lcl_overlay,
+.lcl_fade_oc.lcl_is_closing #lcl_window {
+	opacity: 0 !important;
+}
+.lcl_fade_oc.lcl_is_closing #lcl_overlay {
+	-webkit-transition-delay: .15s !important;
+	transition-delay: .15s !important;
+}
+</style>
+{#    <script src='https://code.jquery.com/jquery-3.2.1.min.js' type='text/javascript'></script>#}
+<script src="{% static 'js/jquery.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/lc_lightbox.lite.js' %}" type="text/javascript"></script>
+<link rel="stylesheet" href="{% static 'css/lc_lightbox.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/minimal.css' %}" />
+    <script src="{% static 'js/alloy_finger.js' %}" type="text/javascript"></script>
+
+<section>
+<div class="container">
+<div class="row">
+          <div class="col-md-12">
+	<div class="content" style="background-color: darkgrey;border-radius: 10px">
+        {% for data in result %}
+            {% for files in data.1 %}
+                {% for media in files %}
+                    {% if media.extension == '.jpg' or media.extension == '.jpeg' or media.extension == '.png' or media.extension == '.gif' or media.extension == '.webp' or media.extension == '.tiff' or media.extension == '.psd' or media.extension == '.bmp' or media.extension == '.svg' or media.extension == '.eps' or media.extension == '.tif' %}
+   		                <span style="">
+                        {% if "profile picture" in data.0.post_header %}
+                            <a class="elem" href="{{ media.file_data.url }}" title="Updated Profile on {{ data.0.date_created }}" data-lcl-txt="<a target='_blank' href='{% url 'view_postr' %}?idnt={{ data.0.post_id }}'>View Profile</a>" data-lcl-author="You" data-lcl-thumb="{{ media.file_data.url }}">
+        	                    <span style="background-image: url({{ media.file_data.url }});"></span>
+                            </a>
+                        {% elif "created a post" in data.0.post_header %}
+                            <a class="elem" href="{{ media.file_data.url }}" title="Created Post on {{ data.0.date_created }}" data-lcl-txt="<a target='_blank' href='{% url 'view_postr' %}?idnt={{ data.0.post_id }}'>View Post</a>" data-lcl-author="You" data-lcl-thumb="{{ media.file_data.url }}">
+        	                    <span style="background-image: url({{ media.file_data.url }});"></span>
+                            </a>
+                        {% endif %}
+                        </span>
+                    {% elif media.extension == '.webm' or media.extension == '.mkv' or media.extension == '.flv' or media.extension == '.ogg' or media.extension == '.avi' or media.extension == '.mov' or media.extension == '.mp4' or media.extension == '.mpg' or media.extension == '.mpeg' or media.extension == '.3gp'  %}
+                        <a href="{{ media.file_data.url }}" title="image 1" data-lcl-txt="lorem ipsum dolor sit amet" data-lcl-author="someone" data-lcl-thumb="{{ media.file_data.url }}">
+        	                <span style="padding: 10px"><video style="max-height: 300px;max-width: 300px" controls src="{{ media.file_data.url }}"></video></span>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+
+   		<br/><br/>
+   	</div>
+          </div></div>
+</div>
+</section>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js" integrity="sha512-Y2IiVZeaBwXG1wSV7f13plqlmFOx8MdjuHyYFVoYzhyRr3nH/NMDjTBSswijzADdNzMyWNetbLMfOpIPl6Cv9g==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js" integrity="sha512-YibiFIKqwi6sZFfPm5HNHQYemJwFbyyYHjrr3UT+VobMt/YBo1kBxgui5RWc4C3B4RJMYCdCAJkbXHt+irKfSA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js.map" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js.map" ></script>
+<script type="text/javascript">
+$(document).ready(function(e) {
+
+	// live handler
+	lc_lightbox('.elem', {
+		wrap_class: 'lcl_fade_oc',
+		gallery : true,
+		thumb_attr: 'data-lcl-thumb',
+
+		skin: 'minimal',
+		radius: 0,
+		padding	: 0,
+		border_w: 0,
+	});
+
+});
+</script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    var data=document.getElementById("photos_tab");
+        data.className="nav-link active";
+        data.style.fontSize="40";
+        data.style.fontWeight="bolder";
+    </script>
+
+
+{% endblock %}
+
+
+

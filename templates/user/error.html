@@ -1,0 +1,29 @@
+{% extends 'home_common.html' %}
+{% load webpush_notifications %}
+{% block content %}
+    {% load  static %}
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+
+        <h4 align="center" style="color: red">
+         oops something went wrong.
+              please try again.
+        </h4>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+
+

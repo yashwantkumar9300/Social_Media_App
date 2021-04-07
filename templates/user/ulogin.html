@@ -1,0 +1,55 @@
+{% extends 'common1.html' %}
+    {% block content %}
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+        <div class="container">
+	<div class="d-flex justify-content-center h-90">
+		<div class="card">
+			<div class="card-header">
+				<h3>Sign In</h3>
+			</div>
+			<div class="card-body">
+				<form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-mobile"></i></span>
+						</div>
+						<input type="text" class="form-control" placeholder="Mobile Number" name="uname">
+					</div>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-key"></i></span>
+						</div>
+						<input type="password" class="form-control" placeholder="Password" name="upass">
+					</div>
+					<div class="form-group" style="text-align: center">
+                        <button type="submit" class="btn login_btn">Login</button>
+					</div>
+				</form>
+                {% if success %}
+                    <div class="success_mess">{{ success }}</div>
+                {% endif %}
+                {% if logout %}
+                    <div class="success_mess">{{ logout }}</div>
+                {% endif %}
+                {% if error %}
+                    <div class="error_mess">{{ error }}</div>
+                {% endif %}
+                {% for mess in messages %}
+                    <div class="success_mess">{{ mess }}</div>
+                {% endfor %}
+			</div>
+			<div class="card-footer">
+				<div class="d-flex justify-content-center links">
+					Don't have an account?<a href="{% url 'sign_up' %}"> Sign Up</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<a href="{% url 'u_forgot_pwd' %}">Forgot your password?</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+        <br><br><br><br><br><br><br>
+    {% endblock %}

@@ -1,0 +1,220 @@
+header{
+	background-image: linear-gradient(#41f6a8, #41f6a8 60%, #41f6a8);
+	color:#fff;
+	/*min-height: 100px;*/
+	/*padding-top: 25px;*/
+}
+body{
+	font-family: Calibri;
+}
+
+header form{
+	float:right;
+}
+
+header .logo{
+	float:left;
+}
+
+.panel-heading{
+    background-image: linear-gradient(#41f6a8, #41f6a8 60%, #41f6a8);
+    color: #fff !important;
+}
+
+.bubble{
+	position: relative;
+	width: 580px;
+	min-height: 65px;
+	padding: 15px;
+	background: #fff;
+	border-radius: 10px;
+	border: 1px solid #ccc;
+}
+
+.bubble:after{
+	content:'';
+	position: absolute;
+	border-style: solid;
+	border-width: 15px 15px 15px 0;
+	border-color: transparent #fff;
+	display: block;
+	width: 0;
+	z-index: 1;
+	margin-top: -15px;
+	left:-15px;
+	top: 50%;
+}
+
+.bubble:before{
+	content:'';
+	position: absolute;
+	border-style: solid;
+	border-width: 15px 15px 15px 0;
+	border-color: transparent #ccc;
+	display: block;
+	width: 0;
+	z-index: 0;
+	margin-top: -15px;
+	left:-16px;
+	top: 50%;
+}
+
+.post-actions{
+	margin:5px;
+}
+
+.comment-form .form-group{
+	width: 90%;
+}
+
+.comment{
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 3px;
+	margin: 5px 0;
+	overflow: auto;
+	width:100%;
+}
+
+.comment-form input[type="text"]{
+	width: 100%;
+}
+
+.comment-avatar img{
+	width: 40px;
+	margin-right: 5px;
+}
+
+.friends li{
+	list-style: none;
+	padding:0 5px;
+	display:inline;
+	float:left;
+}
+
+.friends img{
+	width: 55px;
+}
+
+.groups img{
+	width:80px;
+	float:left;
+	margin-right: 15px;
+}
+
+.group-item{
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+	overflow: auto;
+}
+
+.profile ul{
+	margin-top: 30px;
+}
+
+.profile li{
+	list-style: none;
+	line-height: 1.9em;
+}
+
+.photos{
+	margin: 0;
+	padding: 0;
+}
+
+.photos li{
+	list-style: none;
+	float: left;
+	margin:5px;
+	width: 23%;
+}
+
+.photos img{
+	width:100%;
+}
+
+footer{
+	background: #f4f4f4;
+	height: 50px;
+	color: #41f6a8;
+	font-weight: bold;
+	text-align: center;
+	padding-top: 40px;
+	margin-top: 30px;
+	border-top: 7px solid #41f6a8;
+}
+
+.members .member-row{
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+}
+
+.members img{
+	margin-bottom: 5px;
+}
+
+@media(min-width: 991px){
+  .members p{
+	padding-top: 10px;
+	}
+}
+#u_photo_header
+{
+	margin: 20px;
+	font-weight: bold;
+	float: right;
+	font-size: 20px;
+}
+
+
+
+.dropbtn {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+.unread{
+	background-color: rgba(191,187,126,0.53);
+}
+

@@ -1,0 +1,328 @@
+{% extends 'home_common.html' %}
+
+{% block content %}
+    {% load static %}
+
+    <section class="intro-section" style="margin-top: -20px;z-index: 0;position: relative">
+		<div class="container" style="margin-top: -150px">
+			<div class="row">
+				<div class="col-md-1 col-lg-2"></div>
+				<div class="col-md-10 col-lg-8">
+					<div class="intro">
+						<div class="profile-img">
+                            <a href="{{ details.image.url }}"><img src="{{ details.image.url }}" alt="" class="img-responsive"></a>
+                        </div>
+						{%  if details %}
+                        <h2><b>{{ details.fname }} {{ details.lname }}</b></h2>
+                            {% if frnd == "Friends" %}<a href="/u/chat/{{ details.username }}" style="text-decoration: none;color: unset"><img height="30" width="30" src="{% static 'images/iconfinder_messenger-circle-long_2248175.png' %}"></a>{% endif %}
+                            <input type="hidden" disabled value="{{ details.username }}" id="searchedUser">
+
+						<ul class="information margin-tb-30">
+							<li><b>Mobile Number : </b>{{ details.username }}</li>
+							<li><b>EMAIL ID : </b>{{ details.email }}</li>
+							<li><b>JOINED : </b>{{ details.user.date_joined|date:"M Y" }}</li>
+                            <li><b>WORKING AS : </b>{{ details.working_as }}</li>
+							<li><b>LIVES IN : </b>{{ details.lives_in }}</li>
+							<li><b>BIO : </b>{{ details.about }}</li>
+
+                            {% if already %}
+                                <button class="btn btn-success" id="accept" onclick="acceptRequest(this)" value="{{ already.idno }}">Accept Request</button>
+                                <button class="btn btn-danger" id="cancel" onclick="cancelRequest(this)" value="{{ already.idno }}">Cancel</button>
+                                <span id="accepted"></span>
+                            {% elif frnd == "Friends" %}
+                                You Are Friends.<br>
+
+                            {% if common_friends %}
+                            <p>
+                                <a class="btn btn-primary" data-toggle="collapse" href="#commFrnd" role="button" aria-expanded="false" aria-controls="commFrnd">
+                                    <span>Friends in common</span>
+                                </a>
+                            </p>
+                            <div class="collapse" id="commFrnd">
+                            <div class="row row-cols-1 row-cols-md-5" style="text-align: center">
+                                    {% for comm in common_friends %}
+                                    <div class="col mb-4">
+                                        <div class="card h-70">
+                                            <a href="{% url 'search_friends_detail' %}?f={{ comm.username }}" style="text-decoration: none;color: black">
+                                            <span style="text-align: center"><img src="{{ comm.image.url }}" style="height: 50px;width: 50px;border-radius: 25px;margin-top: 8px"></span>
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ comm.username|truncatechars:"6" }}</h5>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                            </div>
+                            </div>
+                                {% endif %}
+
+                                {% if id_for_unfrnd %}
+                                    <button class="btn btn-danger" id="unfrnd" onclick="unfriend(this)" value="{{ id_for_unfrnd.idno }}">Unfriend</button>
+                                    <br>
+                                {% endif %}
+                            {% else %}
+                                {% if request_sent %}
+                                    <span id="req_sent_span">
+                                        <button type="submit" class="btn btn-danger" id="req_sent" onclick="add_friends(this)" value="{{ details.user_id }}">Cancel Request</button>
+                                    </span>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" id="frnd_request" onclick="add_friends(this)" value="{{ details.user_id }}">Add Friend</button>
+                                {% endif %}
+                            {% endif %}
+
+
+						</ul>
+
+					</div><!-- intro -->
+                            {% else %}
+                            No Data
+                    {% endif %}
+				</div><!-- col-sm-8 -->
+			</div><!-- row -->
+		</div><!-- container -->
+	</section><!-- intro-section --><br>
+
+    {% if frnd == "Friends" %}
+    <div style="margin-left: calc(100% - 1100px)">
+    <section>
+      <div class="container">
+    <div class="row">
+          <div class="col-md-9">
+              {% for post in all_post %}
+                <div class="panel panel-default post" style="overflow: hidden" id="postDiv{{ post.0.post_id }}">
+                {% if request.user.username == post.0.created_by.username %}
+                    <span style="float: left;margin-right: -5px">
+                       <button type="button"  data-toggle="modal" data-target="#exampleModal{{ post.0.post_id }}" style="background-color: transparent;border: none;margin-right: -11px">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                            </svg>
+                       </button>
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal fade" id="exampleModal{{ post.0.post_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel" style="color: red">Delete Post</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete the post?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" id="closeModal{{ post.0.post_id }}" class="btn btn-secondary" data-dismiss="modal">No. Close</button>
+                                            <button type="button" class="btn btn-primary" onclick="deletePost({{ post.0.post_id }})" >Yes. Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                {% endif %}
+              <div class="panel-body">
+                 <div class="row">
+                   <div class="col-sm-2">
+                     <a href="{% url 'redirect_me' %}?u={{ post.0.created_by.username }}" class="post-avatar thumbnail"><img src="{{ post.0.created_by.image.url }}" alt=""><div class="text-center" style="overflow: hidden">{{ post.0.created_by.username|truncatechars:"12" }}</div></a>
+                     <div class="small text-center">Posted : {{ post.0.date_created|timesince }} ago.</div><br>
+                     <div class="likes text-center">
+                         <span class="no_of_likes" id="likesofpost{{ post.0.post_id }}">{% if post.4 %}{{ post.4 }}{% endif %}</span><br>
+                            {% if post.3 %}
+                                <button onclick="likesOnPost({{ post.0.post_id }})" x-data="{
+                                    state: 'Liked',usedKeyboard: false, async updateState(to) {
+                                        this.state = 'Saving'
+                                        await new Promise(resolve => setTimeout(resolve, 500))
+                                        this.state = to
+                                        }
+                                        }"
+                                    :class="{ 'like unliked': state === 'Unliked','like saving': state === 'Saving',
+                                              'like liked': state === 'Liked','focus:outline-none': !usedKeyboard
+                                            }"
+                                    @click="updateState(state === 'Unliked' ? 'Liked' : 'Unliked')" @keydown.window.tab="usedKeyboard = true">
+                                            <span class="like-icon like-icon-state" aria-label="state" x-text="state" aria-live="polite">Unliked</span>
+                                </button>
+                            {% else %}
+                                <button onclick="likesOnPost({{ post.0.post_id }})" x-data="{
+                                    state: 'Unliked',usedKeyboard: false, async updateState(to) {
+                                        this.state = 'Saving'
+                                        await new Promise(resolve => setTimeout(resolve, 500))
+                                        this.state = to
+                                        }
+                                        }"
+                                    :class="{ 'like unliked': state === 'Unliked','like saving': state === 'Saving',
+                                              'like liked': state === 'Liked','focus:outline-none': !usedKeyboard
+                                            }"
+                                    @click="updateState(state === 'Unliked' ? 'Liked' : 'Unliked')" @keydown.window.tab="usedKeyboard = true">
+                                            <span class="like-icon like-icon-state" aria-label="state" x-text="state" aria-live="polite">Unliked</span>
+                                </button>
+                    {% endif %}
+                     </div>
+                   </div>
+                   <div class="col-sm-10">
+                       <span style="font-size: 17px"><b><a style="text-decoration: none" href="{% url 'redirect_me' %}?u={{ post.0.created_by.username }}">{{ post.0.created_by.username }}</a> {{ post.0.post_header }}{{ post.0.date_created }}</b></span>
+                   {% if post.0.description %}
+                     <div class="bubble" style="max-height: 200px;position: relative">
+                            <div class="pointer" style="max-height: 400px">
+                                <p>
+                                    {{ post.0.description|truncatechars_html:"50" }}
+                                    {% if post.0.description|length > 50 %}
+                                    <a data-toggle="collapse" href="#gotopost{{ post.0.post_id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        View Full Post.
+                                    </a>
+                                    <div class="collapse" id="gotopost{{ post.0.post_id }}">
+                                        <div class="card card-body" style="overflow-y: scroll;max-height: 135px">
+                                            {{ post.0.description }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </p>
+                            </div>
+                     </div>
+                   {% endif %}
+                        <br>
+                        <div class="pointer-border" style="float: left;min-height: 180px">
+                           {% for img in post.1|slice:"3" %}
+                               {% if forloop.counter0 <= 1 %}
+                                   {% if img.extension == '.jpg' or img.extension == '.jpeg' or img.extension == '.png' or img.extension == '.gif' or img.extension == '.webp' or img.extension == '.tiff' or img.extension == '.psd' or img.extension == '.bmp' or img.extension == '.svg' or img.extension == '.eps' or img.extension == '.tif' %}
+                                        {% if post.1|length == 1 %}
+                                            <img src="{{ img.file_data.url }}" onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}" class="img-fluid rounded img-thumbnail" style="max-height: 470px;max-width: 540px;margin-bottom: 10px" alt="Image Not Available">
+                                        {% else %}
+                                            <img src="{{ img.file_data.url }}" onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}" class="post-avatar thumbnail rounded float-left" style="max-height: 170px;max-width: 170px;float: left" alt="Image Not Available">
+                                        {% endif %}
+                                   {% elif img.extension == '.webm' or img.extension == '.mkv' or img.extension == '.flv' or img.extension == '.ogg' or img.extension == '.avi' or img.extension == '.mov' or img.extension == '.mp4' or img.extension == '.mpg' or img.extension == '.mpeg' or img.extension == '.3gp'  %}
+                                        <span data-toggle="modal" onclick="modalDetailedPost({{ post.0.post_id }})" data-target="#detailModal{{ post.0.post_id }}"><video controls src="{{ img.file_data.url }}" style="max-height: 170px;max-width: 170px"></video></span>
+                                   {% else %}
+                                       <span style="overflow: hidden"><a href="/media/{{ img.file_data }}" target="_blank">{{ img.getFileName|truncatechars:"32" }}&nbsp;&nbsp;</a></span>
+                                   {% endif %}
+                               {% else %}
+                                   <span class="blurred_img">
+                                        {% if forloop.last and post.1|length > 3  %}
+                                            {% if img.extension == '.jpg' or img.extension == '.jpeg' or img.extension == '.png' or img.extension == '.gif' or img.extension == '.webp' or img.extension == '.tiff' or img.extension == '.psd' or img.extension == '.bmp' or img.extension == '.svg' or img.extension == '.eps' or img.extension == '.tif' %}
+                                                <img onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}" src="{{ img.file_data.url }}" class="post-avatar thumbnail rounded float-left" style="max-height: 170px;max-width: 170px;float: left;opacity: 0.5;overflow: hidden" alt="Image Not Available">
+                                            {% elif img.extension == '.webm' or img.extension == '.mkv' or img.extension == '.flv' or img.extension == '.ogg' or img.extension == '.avi' or img.extension == '.mov' or img.extension == '.mp4' or img.extension == '.mpg' or img.extension == '.mpeg' or img.extension == '.3gp'  %}
+                                                <span onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}"><video controls src="{{ img.file_data.url }}" style="max-height: 170px;max-width: 170px"></video></span>
+                                            {% else %}
+                                                <span style="overflow: hidden"><a href="/media/{{ img.file_data }}" target="_blank">{{ img.getFileName|truncatechars:"32" }}&nbsp;&nbsp;</a></span>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if img.extension == '.jpg' or img.extension == '.jpeg' or img.extension == '.png' or img.extension == '.gif' or img.extension == '.webp' or img.extension == '.tiff' or img.extension == '.psd' or img.extension == '.bmp' or img.extension == '.svg' or img.extension == '.eps' or img.extension == '.tif' %}
+                                                <img onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}" src="{{ img.file_data.url }}" class="post-avatar thumbnail rounded float-left" style="max-height: 170px;max-width: 170px;float: left;overflow: hidden" alt="Image Not Available">
+                                            {% elif img.extension == '.webm' or img.extension == '.mkv' or img.extension == '.flv' or img.extension == '.ogg' or img.extension == '.avi' or img.extension == '.mov' or img.extension == '.mp4' or img.extension == '.mpg' or img.extension == '.mpeg' or img.extension == '.3gp'  %}
+                                                <span onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}">
+                                                <video controls src="{{ img.file_data.url }}" style="max-height: 170px;max-width: 170px"></video>
+                                                </span>
+                                            {% else %}
+                                                <span>
+                                                    <a href="/media/{{ img.file_data }}" style="opacity: 0.5%" target="_blank">{{ img.getFileName|truncatechars:"32" }}&nbsp;&nbsp;</a><br><br>
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                        <div onclick="modalDetailedPost({{ post.0.post_id }})" class="centered" style="overflow: hidden" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}">
+                                            {% if post.1|length > 3 and img.extension == '.jpg' or img.extension == '.jpeg' or img.extension == '.png' or img.extension == '.gif' or img.extension == '.webp' or img.extension == '.tiff' or img.extension == '.psd' or img.extension == '.bmp' or img.extension == '.svg' or img.extension == '.eps' or img.extension == '.tif' or img.extension == '.webm' or img.extension == '.mkv' or img.extension == '.flv' or img.extension == '.ogg' or img.extension == '.avi' or img.extension == '.mov' or img.extension == '.mp4' or img.extension == '.mpg' or img.extension == '.mpeg' or img.extension == '.3gp' %}
+                                                {% if post.1|length|add:"-3" != 0 %}
+                                                    +{{ post.1|length|add:"-3" }} more
+                                                {% endif %}
+                                            {% else %}
+                                                <span data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}"><br>
+                                                    {% if post.1|length|add:"-3" != 0 %}
+                                                        +{{ post.1|length|add:"-3" }} more
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                   </span>
+                               {% endif %}
+                           {% endfor %}
+                       </div>
+
+                        {% if post.2 %}
+                            <div id="commentsofpost{{ post.0.post_id }}">
+                            {% for comm in post.2|slice:"2" reversed %}
+                                <div class="comments" >
+                                    <div class="comment">
+                                        <a href="{% url 'redirect_me' %}?u={{ comm.comm_by.username }}" class="comment-avatar pull-left"><img src="{{ comm.comm_by.image.url }}" alt=""></a>
+                                    <div class="comment-text">
+                                        <span style="font-weight: bold">&nbsp;<a style="text-decoration: none;color: black" href="{% url 'redirect_me' %}?u={{ comm.comm_by.username }}">{{ comm.comm_by.username }}</a></span>
+                                        <div style="overflow-y: scroll;max-height: 50px;padding: 5px">{{ comm.description }}</div>
+                                        <span style="float: right" class="small">{{ comm.date_commented|timesince }} ago.</span>
+                                    </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                            {% else %}
+                            <div id="commentsofpost{{ post.0.post_id }}"></div>
+{#                               <br><br><br><br><br><br>#}
+                        {% endif %}
+                       <button onclick="modalDetailedPost({{ post.0.post_id }})" data-toggle="modal" data-target="#detailModal{{ post.0.post_id }}" type="button" id="noofcomments{{ post.0.post_id }}" class="btn btn-info btn-sm btn-block">{{ post.5 }}   Comments</button>
+                        <br>
+                       <div class="comment-form">
+                        <span class="form-group">
+                            <input type="text" required class="form-control" onchange="commentOnPost({{ post.0.post_id }})" id="post{{ post.0.post_id }}comment" placeholder="Write your comment..">
+                        </span>
+                     </div>
+                     <div class="clearfix"></div>
+                   </div>
+                 </div>
+              </div>
+            </div>
+
+{#                                           Modal for detailed Post                                    #}
+
+            <div class="modal-dialog modal-xl" >
+                <div class="modal fade" id="detailModal{{ post.0.post_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalTitle{{ post.0.post_id }}">Modal title</h5>
+                                <button onclick="eraseModalHtml({{ post.0.post_id }})" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modalBody{{ post.0.post_id }}">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="eraseModalHtml({{ post.0.post_id }})" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% if forloop.last %}
+                    <input type="hidden" disabled value="{{ post.0.date_created }}" id="lastPost">
+                    <input type="hidden" disabled value="{{ post.0.created_by.username }}" id="currentUser">
+                {% endif %}
+            {% endfor %}
+          <div id="allPostsDiv"></div>
+          </div>
+        </div>
+      </div></section>
+    </div>
+    {% endif %}
+
+<script src="{% static 'js/main.js' %}"></script>
+    <script>
+    function likeForModalPost() {
+        {#alert('1')#}
+        const modalPostLikeButton=document.getElementById('modalPostLikeButton');
+        modalPostLikeButton.addEventListener("click",function () {
+        likeModalPost(modalPostLikeButton.value);
+        })
+    }
+    function commentForModalPost() {
+        const modalPostCommentBox=document.getElementById('commentModalPost');
+        modalPostCommentBox.addEventListener("change",function () {
+        commentModalPost(modalPostCommentBox.value);
+        })
+    }
+    </script>
+      <script>
+        window.onscroll = function(ev) {
+            if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+                loadMorePost(2,document.getElementById('searchedUser').value);
+            }
+        };
+    </script>
+
+{% endblock %}

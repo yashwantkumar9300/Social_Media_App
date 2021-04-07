@@ -1,0 +1,21 @@
+{% extends 'common1.html' %}
+{% block content %}
+    <form action="{% url 'u_for_pwd_email' %}" method="post">
+    {% csrf_token %}
+    <table align="center">
+        <tr>
+            <th colspan="2" class="common_title">Email Verification</th>
+        </tr>
+        <tr>
+            <th><br><input type="text" class="form-control" placeholder="Enter Your Email" required name="email"></th>
+            <th>
+                {% for mess in messages %}
+                    {{ mess }}
+                {% endfor %}
+            </th>
+        </tr>
+        <tr><th colspan="2" style="text-align: center"><br><button type="submit" class="btn btn-primary">Continue</button></th></tr>
+    </table>
+    </form>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}
