@@ -1,6 +1,6 @@
 # Social_Media_App
 
-Used Tech Stack
+Used Technology
 
 Django, 
 Sqlite, 
